@@ -255,7 +255,7 @@ private:
                 "INSERT IGNORE INTO aws_quiz_state (character_guid) VALUES ({})", guid);
 
             QueryResult dueCheck = CharacterDatabase.Query(
-                "SELECT has_pending_question, "
+                "SELECT has_pending_question, is_paused, "
                 "(last_asked_at IS NULL OR "
                 " TIMESTAMPADD(MINUTE, next_interval_minutes, last_asked_at) <= NOW()) AS due "
                 "FROM aws_quiz_state WHERE character_guid = {}",
@@ -265,8 +265,9 @@ private:
 
             Field* fields = dueCheck->Fetch();
             bool hasPending = fields[0].Get<uint8>() != 0;
-            bool due = fields[1].Get<uint8>() != 0;
-            if (hasPending || !due)
+            bool isPaused = fields[1].Get<uint8>() != 0;
+            bool due = fields[2].Get<uint8>() != 0;
+            if (hasPending || isPaused || !due)
                 continue;
 
             QueryResult inFlight = CharacterDatabase.Query(
