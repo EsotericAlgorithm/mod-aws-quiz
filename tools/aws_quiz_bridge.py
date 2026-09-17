@@ -182,6 +182,10 @@ class AwsQuizBridge:
         conn = self.get_connection()
         cursor = conn.cursor()
         add_column_if_missing(
+            cursor, "aws_quiz_queue", "outcome",
+            "outcome ENUM('none', 'correct', 'wrong') NOT NULL DEFAULT 'none' AFTER status",
+        )
+        add_column_if_missing(
             cursor, "aws_quiz_state", "is_paused",
             "is_paused TINYINT(1) NOT NULL DEFAULT 0 AFTER has_pending_question",
         )
@@ -313,12 +317,12 @@ class AwsQuizBridge:
         )
         return cursor.rowcount == 1
 
-    def save_response(self, cursor, request_id, response, tokens=0, cost=None):
+    def save_response(self, cursor, request_id, response, tokens=0, cost=None, outcome="none"):
         cursor.execute(
             "UPDATE aws_quiz_queue SET status = 'complete', response = %s, "
-            "tokens_used = %s, actual_cost_usd = %s, processed_at = NOW() "
+            "outcome = %s, tokens_used = %s, actual_cost_usd = %s, processed_at = NOW() "
             "WHERE id = %s",
-            (response, tokens, cost, request_id),
+            (response, outcome, tokens, cost, request_id),
         )
 
     def save_error(self, cursor, request_id, error: str):
@@ -496,7 +500,8 @@ class AwsQuizBridge:
             (guid,),
         )
 
-        self.save_response(cursor, request_id, response_text, tokens, cost)
+        self.save_response(cursor, request_id, response_text, tokens, cost,
+                            outcome="correct" if was_correct else "wrong")
         logger.info(
             "Graded answer for %s (guid=%s): %s",
             name, guid, "correct" if was_correct else "wrong",

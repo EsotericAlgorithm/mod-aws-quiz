@@ -20,6 +20,13 @@ void AwsQuizConfig::LoadConfig()
     _maxIntervalMinutes = sConfigMgr->GetOption<uint32>("AwsQuiz.MaxIntervalMinutes", 30);
     _queueTimeoutSeconds = sConfigMgr->GetOption<uint32>("AwsQuiz.QueueTimeoutSeconds", 120);
 
+    _streakBuffEnabled = sConfigMgr->GetOption<bool>("AwsQuiz.StreakBuff.Enable", true);
+    _streakBuffDamageSpellId = sConfigMgr->GetOption<uint32>("AwsQuiz.StreakBuff.DamageSpellId", 12880);
+    _streakBuffCritSpellId = sConfigMgr->GetOption<uint32>("AwsQuiz.StreakBuff.CritSpellId", 29801);
+    _streakBuffDurationMinutes = sConfigMgr->GetOption<uint32>("AwsQuiz.StreakBuff.DurationMinutes", 5);
+    _streakBuffPercentPerStack = sConfigMgr->GetOption<uint32>("AwsQuiz.StreakBuff.PercentPerStack", 5);
+    _streakBuffMaxStacks = sConfigMgr->GetOption<uint32>("AwsQuiz.StreakBuff.MaxStacks", 10);
+
     if (_minIntervalMinutes > _maxIntervalMinutes)
         _minIntervalMinutes = _maxIntervalMinutes;
 

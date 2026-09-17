@@ -14,6 +14,7 @@ CREATE TABLE `aws_quiz_queue` (
   `player_answer` TEXT DEFAULT NULL,
   `response` TEXT DEFAULT NULL,
   `status` ENUM('pending', 'processing', 'complete', 'delivered', 'error') NOT NULL DEFAULT 'pending',
+  `outcome` ENUM('none', 'correct', 'wrong') NOT NULL DEFAULT 'none' COMMENT 'Set by the bridge when grading a real answer attempt; drives the streak buff/clear on delivery',
   `tokens_used` INT UNSIGNED DEFAULT 0,
   `actual_cost_usd` DECIMAL(10,6) DEFAULT NULL,
   `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

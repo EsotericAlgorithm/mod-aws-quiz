@@ -44,6 +44,44 @@ AwsQuiz.MaxIntervalMinutes = 30
 #
 AwsQuiz.QueueTimeoutSeconds = 120
 
+#
+#   AwsQuiz.StreakBuff.Enable
+#       A correct answer adds a stack of a real, mild damage%/crit%
+#       buff and refreshes its duration; a single wrong answer clears
+#       every stack immediately — no separate debuff spell needed, losing
+#       the streak is the downside.
+#       Default: 1 - (Enabled)
+#
+AwsQuiz.StreakBuff.Enable = 1
+
+#
+#   AwsQuiz.StreakBuff.DamageSpellId / CritSpellId
+#       Host spells picked only because each has exactly one aura effect
+#       of the needed type (their own DBC magnitude/stack cap is
+#       overridden entirely — see AwsQuizStreakBuff.cpp):
+#       Default: 12880 (Enrage, SPELL_AURA_MOD_DAMAGE_PERCENT_DONE,
+#                physical school only) /
+#                29801 (Rampage, SPELL_AURA_MOD_WEAPON_CRIT_PERCENT)
+#
+AwsQuiz.StreakBuff.DamageSpellId = 12880
+AwsQuiz.StreakBuff.CritSpellId = 29801
+
+#
+#   AwsQuiz.StreakBuff.DurationMinutes
+#       Refreshed to this full duration on every correct answer.
+#       Default: 5
+#
+AwsQuiz.StreakBuff.DurationMinutes = 5
+
+#
+#   AwsQuiz.StreakBuff.PercentPerStack / MaxStacks
+#       Each stack = +PercentPerStack% damage done and crit chance, up
+#       to MaxStacks (default 10 = +50% at full stacks).
+#       Default: 5 / 10
+#
+AwsQuiz.StreakBuff.PercentPerStack = 5
+AwsQuiz.StreakBuff.MaxStacks = 10
+
 ###############################################################################
 # BRIDGE SETTINGS (Used by tools/aws_quiz_bridge.py)
 ###############################################################################

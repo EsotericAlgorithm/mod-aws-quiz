@@ -18,6 +18,7 @@
  */
 
 #include "AwsQuizConfig.h"
+#include "AwsQuizStreakBuff.h"
 
 #include "Chat.h"
 #include "DatabaseEnv.h"
@@ -25,6 +26,7 @@
 #include "Opcodes.h"
 #include "Player.h"
 #include "ScriptMgr.h"
+#include "StringFormat.h"
 #include "World.h"
 #include "WorldPacket.h"
 #include "WorldSession.h"
@@ -295,7 +297,7 @@ private:
             "WHERE status IN ('complete', 'error') LIMIT 10");
 
         QueryResult result = CharacterDatabase.Query(
-            "SELECT id, character_guid, character_name, response "
+            "SELECT id, character_guid, character_name, response, outcome "
             "FROM aws_quiz_queue WHERE status = 'delivered'");
         if (!result)
             return;
@@ -307,14 +309,35 @@ private:
             uint32 characterGuid = fields[1].Get<uint32>();
             std::string characterName = fields[2].Get<std::string>();
             std::string response = fields[3].Get<std::string>();
+            std::string outcome = fields[4].Get<std::string>();
 
             Player* player = ObjectAccessor::FindPlayerByName(characterName);
             if (player && player->GetGUID().GetCounter() == characterGuid)
             {
+                if (outcome == "correct")
+                {
+                    uint32 stackCount = 0;
+                    AwsQuizApplyOrRefreshStreakBuff(player, stackCount);
+                    if (stackCount > 0)
+                    {
+                        uint32 pct = sAwsQuizConfig->GetStreakBuffPercentPerStack() * stackCount;
+                        response += Acore::StringFormat(" (Streak: {} - +{}% dmg/crit, {} min)",
+                            stackCount, pct, sAwsQuizConfig->GetStreakBuffDurationMinutes());
+                    }
+                }
+                else if (outcome == "wrong")
+                {
+                    bool hadStreak = false;
+                    AwsQuizClearStreakBuff(player, hadStreak);
+                    if (hadStreak)
+                        response += " (Streak lost!)";
+                }
+
                 SendQuizMessage(player, response);
                 CharacterDatabase.DirectExecute("DELETE FROM aws_quiz_queue WHERE id = {}", id);
             }
-            // If offline, the row stays queued and delivers next login.
+            // If offline, the row stays queued and delivers (including any
+            // buff/clear) next login.
         } while (result->NextRow());
     }
 };
