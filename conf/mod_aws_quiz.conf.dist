@@ -1,0 +1,75 @@
+[worldserver]
+
+###############################################################################
+# AWS QUIZ MODULE CONFIGURATION
+###############################################################################
+# A virtual "character" you whisper (/w "AWS Quiz" <message>) — no real
+# account needed, same trick mod-llm-guide uses for "AzerothGuide". Pushes
+# an unprompted AWS Solutions Architect Professional practice question
+# every AwsQuiz.MinIntervalMinutes-MaxIntervalMinutes while you're online;
+# whisper it your answer to get graded, or whisper anytime with no
+# question pending to get a fresh one on demand.
+
+#
+#   AwsQuiz.Enable
+#       Default: 0 - (Disabled)
+#                1 - (Enabled)
+#
+AwsQuiz.Enable = 1
+
+#
+#   AwsQuiz.PollIntervalMs
+#       How often the C++ side checks for due questions / bridge responses
+#       to deliver. Not the question cadence itself — see MinIntervalMinutes
+#       below for that.
+#       Default: 2000
+#
+AwsQuiz.PollIntervalMs = 2000
+
+#
+#   AwsQuiz.MinIntervalMinutes / AwsQuiz.MaxIntervalMinutes
+#       Unprompted questions arrive at a random interval in this range
+#       (re-rolled after each question) while you're online and don't
+#       already have a pending one.
+#       Default: 20 / 30
+#
+AwsQuiz.MinIntervalMinutes = 20
+AwsQuiz.MaxIntervalMinutes = 30
+
+#
+#   AwsQuiz.QueueTimeoutSeconds
+#       How long a queued job can sit unprocessed before it's marked
+#       failed (e.g. the bridge is offline).
+#       Default: 120
+#
+AwsQuiz.QueueTimeoutSeconds = 120
+
+###############################################################################
+# BRIDGE SETTINGS (Used by tools/aws_quiz_bridge.py)
+###############################################################################
+
+#
+#   AwsQuiz.Database.Host / Port / User / Password / Name
+#       Same characters DB the queue/state tables live in.
+#
+AwsQuiz.Database.Host = localhost
+AwsQuiz.Database.Port = 3306
+AwsQuiz.Database.User = acore
+AwsQuiz.Database.Password = acore
+AwsQuiz.Database.Name = acore_characters
+
+#
+#   AwsQuiz.Bridge.PollIntervalSeconds
+#       Default: 2
+#
+AwsQuiz.Bridge.PollIntervalSeconds = 2
+
+#
+#   AwsQuiz.OpenRouter.ApiKey / Model
+#       Question generation needs real reasoning quality (SA Pro
+#       questions are nuanced multi-service tradeoffs) — a stronger
+#       model is worth the extra cost here specifically.
+#       Default model: anthropic/claude-sonnet-5
+#
+AwsQuiz.OpenRouter.ApiKey =
+AwsQuiz.OpenRouter.Model = anthropic/claude-sonnet-5

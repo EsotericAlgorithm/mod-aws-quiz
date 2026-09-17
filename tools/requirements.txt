@@ -1,0 +1,2 @@
+# Python dependencies for aws_quiz_bridge.py
+mysql-connector-python>=8.0.0
