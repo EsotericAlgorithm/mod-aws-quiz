@@ -35,10 +35,13 @@
 #include <string>
 #include <vector>
 
-static const std::string QUIZ_NAME = "AWS Quiz";
+// Changed from "AWS Quiz" to a single word (Matt's request 2026-09-17) —
+// no space means no quotes needed client-side: /w aws hello instead of
+// /w "AWS Quiz" hello.
+static const std::string QUIZ_NAME = "AWS";
 // Canonical form both the whisper target and any typo-tolerant variant
 // get reduced to before comparing: lowercased, spaces stripped.
-static const std::string QUIZ_NAME_CANONICAL = "awsquiz";
+static const std::string QUIZ_NAME_CANONICAL = "aws";
 
 static std::string Canonicalize(const std::string& s)
 {

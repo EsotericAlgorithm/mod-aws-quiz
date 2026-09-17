@@ -3,7 +3,7 @@
 ###############################################################################
 # AWS QUIZ MODULE CONFIGURATION
 ###############################################################################
-# A virtual "character" you whisper (/w "AWS Quiz" <message>) — no real
+# A virtual "character" you whisper (/w aws <message>) — no real
 # account needed, same trick mod-llm-guide uses for "AzerothGuide". Pushes
 # an unprompted AWS Solutions Architect Professional practice question
 # every AwsQuiz.MinIntervalMinutes-MaxIntervalMinutes while you're online;
